@@ -12,7 +12,7 @@ class ROCKET:
         training_data = np.hstack((np.array(df[1]).reshape(-1,1),df[0]))
         test_data = np.hstack((np.array(df[3]).reshape(-1,1),df[2]))
 
-        print(f"Performing runs".ljust(80 - 5, "."))
+        print(f"Performing runs".ljust(80 - 5, "."), end="")
         print("Done.")
 
         results = np.zeros(num_runs)
