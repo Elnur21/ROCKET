@@ -15,7 +15,8 @@ class ROCKET:
         print(f"Performing runs".ljust(80 - 5, "."), end="")
         print("Done.")
 
-        results = np.zeros(num_runs)
+        results_training = np.zeros(num_runs)
+        results_test = np.zeros(num_runs)
         timings = np.zeros([4, num_runs]) # training transform, test transform, training, test
 
         Y_training, X_training = training_data[:, 0].astype(np.int32), training_data[:, 1:]
@@ -51,13 +52,14 @@ class ROCKET:
             # -- test --------------------------------------------------------------
 
             time_a = time.perf_counter()
-            results[i] = classifier.score(X_test_transform, Y_test)
+            results_test[i] = classifier.score(X_test_transform, Y_test)
+            results_training[i] = classifier.score(X_training_transform, Y_training)
             time_b = time.perf_counter()
             timings[3, i] = time_b - time_a
 
             print(f"RUNNING".center(80, "="))
 
-        return results, timings
+        return results_training, results_test, timings
 
 
     def compile(self, dataset_name, df):
@@ -96,6 +98,7 @@ def generate_kernels(input_length, num_kernels):
         bias = np.random.uniform(-1, 1)
         dilation = 2 ** np.random.uniform(0, np.log2((input_length - 1) // (length - 1)))
         padding = ((length - 1) * dilation) // 2 if np.random.randint(2) == 1 else 0
+        
         weights[i, :length] = _weights - _weights.mean()
         lengths[i], biases[i], dilations[i], paddings[i] = length, bias, dilation, padding
     return weights, lengths, biases, dilations, paddings
